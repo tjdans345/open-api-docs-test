@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -13,30 +14,32 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final String[] SWAGGER_WHITELIST = {
-            "/v3/api-docs*/**" , "/swagger*/**", "/ultari-docs.html/**", "/api-docs/ultari/**"
+        "/api-docs/**", "/test/**", "/v3/api-docs*/**", "/swagger*/**", "/ultari-docs.html/**", "/api-docs/ultari/**"
     };
 
     /**
      * 정적 리소스 파일 필터 체인 설정 메서드
+     *
      * @param httpSecurity HttpSecurity
      * @return SecurityFilterChain
      * @throws Exception Exception
      */
     @Bean
-    @Order(0)
     public SecurityFilterChain resources(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .securityMatchers(requestMatcherConfigurer ->
-                        requestMatcherConfigurer.requestMatchers(SWAGGER_WHITELIST))
-                .authorizeHttpRequests( authorize ->
-//                authorize.requestMatchers(SWAGGER_WITHELIST).permitAll()
-                        authorize.anyRequest().permitAll())
-                .requestCache().disable()
-                .securityContext().disable()
-                .sessionManagement().disable();
+                .httpBasic().disable()
+                .formLogin().disable()
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .shouldFilterAllDispatcherTypes(false)
+                                .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                                .anyRequest().authenticated()
+                );
+//                .requestCache().disable()
+//                .securityContext().disable()
+//                .sessionManagement().disable();
         return httpSecurity.build();
     }
-
 
 
 }
