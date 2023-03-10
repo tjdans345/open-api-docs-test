@@ -1,0 +1,18 @@
+server:
+  port: 9650
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui
+  #  api-docs:
+  #    path: /api-docs/ultari
+  version: 'v1.0.0'
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  model-and-view-allowed: false
+  paths-to-match:
+    - /api/v1/**
+
